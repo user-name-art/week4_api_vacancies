@@ -28,6 +28,7 @@ pip install -r requirements.txt
 python3 main.py
 ```
 Выполнение может занимать около минуты. Результат будет выглядеть примерно так:
+![222](https://github.com/user-name-art/week4_api_vacancies/assets/112713337/8de9824c-da88-4f0c-a611-409c5c427b43)
 
 
 ## Цели проекта
