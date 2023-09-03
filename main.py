@@ -14,7 +14,7 @@ def predict_salary(salary_from=0, salary_to=0):
         return (salary_from + salary_to) / 2
 
 
-def print_to_table(statistics, title):
+def get_table_with_vacancy_statistics(statistics, title):
     statictics_for_print = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
 
     for language, vacancy_statistics in statistics.items():
@@ -28,8 +28,7 @@ def print_to_table(statistics, title):
 
     table_instance = AsciiTable(statictics_for_print, title)
 
-    print(table_instance.table)
-    print()
+    return table_instance.table
 
 
 def predict_rub_salary_sj(vacancy):
@@ -73,7 +72,7 @@ def get_vacancy_statistics_sj(headers, languages):
             response.raise_for_status()
             
             page_payload = response.json()
-            
+
             page += 1
             more = page_payload['more']
             payload['page'] = page
@@ -144,13 +143,15 @@ def main():
     headers_sj = {'X-Api-App-Id': os.environ['SJ_TOKEN']}
 
     sj_vacancies = get_vacancy_statistics_sj(headers_sj, languages)
-    print_to_table(sj_vacancies, title)
+    print(get_table_with_vacancy_statistics(sj_vacancies, title))
+
+    print()
 
     title = 'HH Moscow'
     headers_hh = {'User-Agent': 'VacancyPasres/0.1 (art.gilyazov@mail.ru)'}
 
     hh_vacancies = get_vacancy_statistics_hh(headers_hh, languages)
-    print_to_table(hh_vacancies, title)
+    print(get_table_with_vacancy_statistics(hh_vacancies, title))
 
 
 if __name__ == '__main__':
