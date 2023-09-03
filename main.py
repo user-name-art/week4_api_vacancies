@@ -17,14 +17,14 @@ def predict_salary(salary_from=0, salary_to=0):
 def print_to_table(statistics, title):
     statictics_for_print = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
 
-    for language, info in statistics.items():
-        info_by_language = []
-        info_by_language.append(language)
+    for language, vacancy_statistics in statistics.items():
+        vacancy_statistics_by_language = []
+        vacancy_statistics_by_language.append(language)
 
-        for value in info.values():
-            info_by_language.append(value)
+        for vacancy_statistic in vacancy_statistics.values():
+            vacancy_statistics_by_language.append(vacancy_statistic)
 
-        statictics_for_print.append(info_by_language)
+        statictics_for_print.append(vacancy_statistics_by_language)
 
     table_instance = AsciiTable(statictics_for_print, title)
 
