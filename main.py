@@ -87,7 +87,6 @@ def get_vacancy_statistics_sj(headers, languages):
 def get_salary_statistics(all_vacancies, predict_rub_salary):
     vacancies_procecced = 0
     all_salaries = 0
-    avegare_salary = 0
     
     for vacancy in all_vacancies:
         vacancy_salary = predict_rub_salary(vacancy)
@@ -95,8 +94,7 @@ def get_salary_statistics(all_vacancies, predict_rub_salary):
             vacancies_procecced += 1
             all_salaries += int(vacancy_salary)
 
-    if vacancies_procecced:
-        avegare_salary = int(all_salaries / (vacancies_procecced))
+    avegare_salary = get_avegare_salary(all_salaries, vacancies_procecced)
     
     vacancy_stat = {'vacancies_found': len(all_vacancies),
                     'vacancies_procecced': vacancies_procecced,
@@ -104,6 +102,14 @@ def get_salary_statistics(all_vacancies, predict_rub_salary):
     }
 
     return vacancy_stat
+
+
+def get_avegare_salary(all_salaries, vacancies_procecced):
+    avegare_salary = 0
+    if vacancies_procecced:
+        avegare_salary = int(all_salaries / (vacancies_procecced))
+
+    return avegare_salary
 
 
 def get_vacancy_statistics_hh(headers, languages):
