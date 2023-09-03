@@ -87,7 +87,7 @@ def statistics_processing(all_vacancies, predict_rub_salary):
     vacancies_procecced = 0
     all_salaries = 0
     avegare_salary = 0
-    vacancy_stat["vacancies_found"] = len(all_vacancies)
+    vacancy_stat['vacancies_found'] = len(all_vacancies)
     
     for vacancy in all_vacancies:
         if predict_rub_salary(vacancy):
@@ -97,8 +97,8 @@ def statistics_processing(all_vacancies, predict_rub_salary):
     if vacancies_procecced:
         avegare_salary = int(all_salaries / (vacancies_procecced))
 
-    vacancy_stat["vacancies_procecced"] = vacancies_procecced
-    vacancy_stat["avegare_salary"] = avegare_salary
+    vacancy_stat['vacancies_procecced'] = vacancies_procecced
+    vacancy_stat['avegare_salary'] = avegare_salary
 
     return vacancy_stat
 
@@ -112,7 +112,7 @@ def vacancy_statistics_hh(headers, languages):
 
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        vacancy_stat["vacancies_found"] = response.json()["found"]
+        vacancy_stat['vacancies_found'] = response.json()['found']
 
         page = 1
         pages_number = response.json()['pages']
@@ -137,7 +137,7 @@ def main():
     languages = ['JavaScript', 'Java', 'Python', 'Ruby', 'PHP', 'C++', 'C#', 'C', 'Go']
 
     title = 'SuperJob Moscow'
-    headers_sj = {'X-Api-App-Id': os.environ["SJ_TOKEN"]}
+    headers_sj = {'X-Api-App-Id': os.environ['SJ_TOKEN']}
 
     sj_vacancies = vacancy_statistics_sj(headers_sj, languages)
     print_to_table(sj_vacancies, title)
