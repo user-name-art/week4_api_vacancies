@@ -55,7 +55,7 @@ def predict_rub_salary_hh(vacancy):
     return predict_salary(vacancy['salary']['from'], vacancy['salary']['to'])
 
 
-def vacancy_statistics_sj(headers, languages):
+def get_vacancy_statistics_sj(headers, languages):
     url_template = 'https://api.superjob.ru/2.0/vacancies/?count=100&catalogues=48&town=4&keywords=программист'
     count_vacancies = {}
 
@@ -77,12 +77,12 @@ def vacancy_statistics_sj(headers, languages):
 
             all_vacancies += page_payload['objects']
             
-        count_vacancies[language] = statistics_processing(all_vacancies, predict_rub_salary_sj)
+        count_vacancies[language] = get_salary_statistics(all_vacancies, predict_rub_salary_sj)
     
     return count_vacancies
 
 
-def statistics_processing(all_vacancies, predict_rub_salary):
+def get_salary_statistics(all_vacancies, predict_rub_salary):
     vacancy_stat = {}
     vacancies_procecced = 0
     all_salaries = 0
@@ -103,7 +103,7 @@ def statistics_processing(all_vacancies, predict_rub_salary):
     return vacancy_stat
 
 
-def vacancy_statistics_hh(headers, languages):
+def get_vacancy_statistics_hh(headers, languages):
     url_template = 'https://api.hh.ru/vacancies?per_page=100&area=1&text=Программист'
     count_vacancies = {}
     for language in languages:
@@ -127,7 +127,7 @@ def vacancy_statistics_hh(headers, languages):
 
             all_vacancies += page_payload['items']
 
-        count_vacancies[language] = statistics_processing(all_vacancies, predict_rub_salary_hh)
+        count_vacancies[language] = get_salary_statistics(all_vacancies, predict_rub_salary_hh)
 
     return count_vacancies
 
@@ -139,13 +139,13 @@ def main():
     title = 'SuperJob Moscow'
     headers_sj = {'X-Api-App-Id': os.environ['SJ_TOKEN']}
 
-    sj_vacancies = vacancy_statistics_sj(headers_sj, languages)
+    sj_vacancies = get_vacancy_statistics_sj(headers_sj, languages)
     print_to_table(sj_vacancies, title)
 
     title = 'HH Moscow'
     headers_hh = {'User-Agent': 'VacancyPasres/0.1 (art.gilyazov@mail.ru)'}
 
-    hh_vacancies = vacancy_statistics_hh(headers_hh, languages)
+    hh_vacancies = get_vacancy_statistics_hh(headers_hh, languages)
     print_to_table(hh_vacancies, title)
 
 
