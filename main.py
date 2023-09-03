@@ -73,9 +73,9 @@ def get_vacancy_statistics_sj(headers, languages):
             response.raise_for_status()
             
             page_payload = response.json()
+            
             page += 1
-
-            more = response.json()['more']
+            more = page_payload['more']
             payload['page'] = page
 
             vacancies_by_language += page_payload['objects']
