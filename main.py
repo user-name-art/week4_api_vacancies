@@ -56,24 +56,27 @@ def predict_rub_salary_hh(vacancy):
 
 
 def get_vacancy_statistics_sj(headers, languages):
-    url_template = 'https://api.superjob.ru/2.0/vacancies/?count=100&catalogues=48&town=4&keywords=программист'
+    url = 'https://api.superjob.ru/2.0/vacancies/'
+
     count_vacancies = {}
 
     for language in languages:
-        url = f'{url_template} {language}'
+        page = 0
+        payload = {'count': 100, 'catalogues': 48, 'town': 4, 'page': page, 'keywords': ''}
+        payload['keywords'] = f'программист {language}'
+        more = True
 
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        
-        page = 1
-        all_vacancies = response.json()['objects']
+        all_vacancies = []        
 
-        while response.json()['more']:
-            response = requests.get(url, headers=headers, params={'page': page})
+        while more:
+            response = requests.get(url, headers=headers, params=payload)
             response.raise_for_status()
             
             page_payload = response.json()
             page += 1
+
+            more = response.json()['more']
+            payload['page'] = page
 
             all_vacancies += page_payload['objects']
             
@@ -104,26 +107,26 @@ def get_salary_statistics(all_vacancies, predict_rub_salary):
 
 
 def get_vacancy_statistics_hh(headers, languages):
-    url_template = 'https://api.hh.ru/vacancies?per_page=100&area=1&text=Программист'
+    url = 'https://api.hh.ru/vacancies'
+
     count_vacancies = {}
+
     for language in languages:
+        page = 0
+        pages_number = 1
+        payload = {'per_page': 100, 'area': 1, 'page': page, 'text': ''}
+        payload['text'] = f'Программист {language}'
+
+        all_vacancies = []
         vacancy_stat = {}
-        url = f'{url_template} {language}'
-
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        vacancy_stat['vacancies_found'] = response.json()['found']
-
-        page = 1
-        pages_number = response.json()['pages']
-        all_vacancies = response.json()['items']
-
+        
         while page < pages_number:
-            page_response = requests.get(url, headers=headers, params={'page': page})
-            page_response.raise_for_status()
+            response = requests.get(url, headers=headers, params=payload)
+            response.raise_for_status()
             
-            page_payload = page_response.json()
+            page_payload = response.json()
             page += 1
+            pages_number = page_payload['pages']
 
             all_vacancies += page_payload['items']
 
