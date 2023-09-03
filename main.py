@@ -66,7 +66,7 @@ def get_vacancy_statistics_sj(headers, languages):
         payload['keywords'] = f'программист {language}'
         more = True
 
-        all_vacancies = []        
+        vacancies_by_language = []        
 
         while more:
             response = requests.get(url, headers=headers, params=payload)
@@ -78,30 +78,31 @@ def get_vacancy_statistics_sj(headers, languages):
             more = response.json()['more']
             payload['page'] = page
 
-            all_vacancies += page_payload['objects']
+            vacancies_by_language += page_payload['objects']
             
-        count_vacancies[language] = get_salary_statistics(all_vacancies, predict_rub_salary_sj)
+        count_vacancies[language] = get_salary_statistics(vacancies_by_language, predict_rub_salary_sj)
     
     return count_vacancies
 
 
 def get_salary_statistics(all_vacancies, predict_rub_salary):
-    vacancy_stat = {}
     vacancies_procecced = 0
     all_salaries = 0
     avegare_salary = 0
-    vacancy_stat['vacancies_found'] = len(all_vacancies)
     
     for vacancy in all_vacancies:
-        if predict_rub_salary(vacancy):
+        vacancy_salary = predict_rub_salary(vacancy)
+        if vacancy_salary:
             vacancies_procecced += 1
-            all_salaries += int(predict_rub_salary(vacancy))
+            all_salaries += int(vacancy_salary)
 
     if vacancies_procecced:
         avegare_salary = int(all_salaries / (vacancies_procecced))
-
-    vacancy_stat['vacancies_procecced'] = vacancies_procecced
-    vacancy_stat['avegare_salary'] = avegare_salary
+    
+    vacancy_stat = {'vacancies_found': len(all_vacancies),
+                    'vacancies_procecced': vacancies_procecced,
+                    'avegare_salary': avegare_salary,
+    }
 
     return vacancy_stat
 
@@ -117,7 +118,7 @@ def get_vacancy_statistics_hh(headers, languages):
         payload = {'per_page': 100, 'area': 1, 'page': page, 'text': ''}
         payload['text'] = f'Программист {language}'
 
-        all_vacancies = []
+        vacancies_by_language = []
         vacancy_stat = {}
         
         while page < pages_number:
@@ -128,9 +129,9 @@ def get_vacancy_statistics_hh(headers, languages):
             page += 1
             pages_number = page_payload['pages']
 
-            all_vacancies += page_payload['items']
+            vacancies_by_language += page_payload['items']
 
-        count_vacancies[language] = get_salary_statistics(all_vacancies, predict_rub_salary_hh)
+        count_vacancies[language] = get_salary_statistics(vacancies_by_language, predict_rub_salary_hh)
 
     return count_vacancies
 
