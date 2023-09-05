@@ -56,6 +56,9 @@ def predict_rub_salary_hh(vacancy):
 
 def get_vacancy_statistics_sj(headers, languages):
     url = 'https://api.superjob.ru/2.0/vacancies/'
+    vacancies_by_page = 100
+    directory_section_developer = 48
+    mocsow_id = 4
 
     count_vacancies = {}
 
@@ -63,9 +66,9 @@ def get_vacancy_statistics_sj(headers, languages):
         page = 0
         more = True
 
-        payload = {'count': 100,
-                   'catalogues': 48,
-                   'town': 4,
+        payload = {'count': vacancies_by_page,
+                   'catalogues': directory_section_developer,
+                   'town': mocsow_id,
                    'page': page,
                    'keywords': f'программист {language}',
         }
@@ -119,6 +122,8 @@ def get_avegare_salary(all_salaries, vacancies_procecced):
 
 def get_vacancy_statistics_hh(headers, languages):
     url = 'https://api.hh.ru/vacancies'
+    vacancies_by_page = 100
+    mocsow_id = 1
 
     count_vacancies = {}
 
@@ -126,8 +131,8 @@ def get_vacancy_statistics_hh(headers, languages):
         page = 0
         pages_number = 1
 
-        payload = {'per_page': 100,
-                   'area': 1,
+        payload = {'per_page': vacancies_by_page,
+                   'area': mocsow_id,
                    'page': page,
                    'text': f'Программист {language}',
         }
