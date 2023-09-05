@@ -56,17 +56,17 @@ def predict_rub_salary_hh(vacancy):
 
 def get_vacancy_statistics_sj(headers, languages):
     url = 'https://api.superjob.ru/2.0/vacancies/'
-    vacancies_by_page = 100
+    vacancies_per_page = 100
     directory_section_developer = 48
     mocsow_id = 4
 
-    count_vacancies = {}
+    all_vacancies = {}
 
     for language in languages:
         page = 0
         more = True
 
-        payload = {'count': vacancies_by_page,
+        payload = {'count': vacancies_per_page,
                    'catalogues': directory_section_developer,
                    'town': mocsow_id,
                    'page': page,
@@ -87,24 +87,24 @@ def get_vacancy_statistics_sj(headers, languages):
 
             vacancies_by_language += page_payload['objects']
             
-        count_vacancies[language] = get_salary_statistics(vacancies_by_language, predict_rub_salary_sj)
+        all_vacancies[language] = get_salary_statistics(vacancies_by_language, predict_rub_salary_sj)
     
-    return count_vacancies
+    return all_vacancies
 
 
-def get_salary_statistics(all_vacancies, predict_rub_salary):
+def get_salary_statistics(vacancies_by_language, predict_rub_salary):
     vacancies_procecced = 0
-    all_salaries = 0
+    sum_salaries = 0
     
-    for vacancy in all_vacancies:
+    for vacancy in vacancies_by_language:
         vacancy_salary = predict_rub_salary(vacancy)
         if vacancy_salary:
             vacancies_procecced += 1
-            all_salaries += int(vacancy_salary)
+            sum_salaries += int(vacancy_salary)
 
-    avegare_salary = get_avegare_salary(all_salaries, vacancies_procecced)
+    avegare_salary = get_avegare_salary(sum_salaries, vacancies_procecced)
     
-    vacancy_stat = {'vacancies_found': len(all_vacancies),
+    vacancy_stat = {'vacancies_found': len(vacancies_by_language),
                     'vacancies_procecced': vacancies_procecced,
                     'avegare_salary': avegare_salary,
     }
@@ -112,26 +112,26 @@ def get_salary_statistics(all_vacancies, predict_rub_salary):
     return vacancy_stat
 
 
-def get_avegare_salary(all_salaries, vacancies_procecced):
+def get_avegare_salary(sum_salaries, vacancies_procecced):
     avegare_salary = 0
     if vacancies_procecced:
-        avegare_salary = int(all_salaries / (vacancies_procecced))
+        avegare_salary = int(sum_salaries / (vacancies_procecced))
 
     return avegare_salary
 
 
 def get_vacancy_statistics_hh(headers, languages):
     url = 'https://api.hh.ru/vacancies'
-    vacancies_by_page = 100
+    vacancies_per_page = 100
     mocsow_id = 1
 
-    count_vacancies = {}
+    all_vacancies = {}
 
     for language in languages:
         page = 0
         pages_number = 1
 
-        payload = {'per_page': vacancies_by_page,
+        payload = {'per_page': vacancies_per_page,
                    'area': mocsow_id,
                    'page': page,
                    'text': f'Программист {language}',
@@ -150,9 +150,9 @@ def get_vacancy_statistics_hh(headers, languages):
 
             vacancies_by_language += page_payload['items']
 
-        count_vacancies[language] = get_salary_statistics(vacancies_by_language, predict_rub_salary_hh)
+        all_vacancies[language] = get_salary_statistics(vacancies_by_language, predict_rub_salary_hh)
 
-    return count_vacancies
+    return all_vacancies
 
 
 def main():
@@ -162,16 +162,16 @@ def main():
     title = 'SuperJob Moscow'
     headers_sj = {'X-Api-App-Id': os.environ['SJ_TOKEN']}
 
-    sj_vacancies = get_vacancy_statistics_sj(headers_sj, languages)
-    print(get_table_with_vacancy_statistics(sj_vacancies, title))
+    vacancy_statistics_sj = get_vacancy_statistics_sj(headers_sj, languages)
+    print(get_table_with_vacancy_statistics(vacancy_statistics_sj, title))
 
     print()
 
     title = 'HH Moscow'
     headers_hh = {'User-Agent': 'VacancyPasres/0.1 (art.gilyazov@mail.ru)'}
 
-    hh_vacancies = get_vacancy_statistics_hh(headers_hh, languages)
-    print(get_table_with_vacancy_statistics(hh_vacancies, title))
+    vacancy_statistics_hh = get_vacancy_statistics_hh(headers_hh, languages)
+    print(get_table_with_vacancy_statistics(vacancy_statistics_hh, title))
 
 
 if __name__ == '__main__':
