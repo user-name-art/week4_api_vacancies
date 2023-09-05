@@ -61,10 +61,15 @@ def get_vacancy_statistics_sj(headers, languages):
 
     for language in languages:
         page = 0
-        payload = {'count': 100, 'catalogues': 48, 'town': 4, 'page': page, 'keywords': ''}
-        payload['keywords'] = f'программист {language}'
         more = True
 
+        payload = {'count': 100,
+                   'catalogues': 48,
+                   'town': 4,
+                   'page': page,
+                   'keywords': f'программист {language}',
+        }
+        
         vacancies_by_language = []        
 
         while more:
@@ -120,8 +125,12 @@ def get_vacancy_statistics_hh(headers, languages):
     for language in languages:
         page = 0
         pages_number = 1
-        payload = {'per_page': 100, 'area': 1, 'page': page, 'text': ''}
-        payload['text'] = f'Программист {language}'
+
+        payload = {'per_page': 100,
+                   'area': 1,
+                   'page': page,
+                   'text': f'Программист {language}',
+        }
 
         vacancies_by_language = []
         vacancy_stat = {}
